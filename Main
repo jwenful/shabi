@@ -1,0 +1,272 @@
+package xueshengxuanke;
+
+
+import java.util.*;
+
+public class Main{
+    static int teachernum = 0;
+ 
+    public static void main(String[] args) {
+        ArrayList<Professor> p = new ArrayList<Professor>();
+        ArrayList<associateProfessor> a = new ArrayList<associateProfessor>();
+        ArrayList<lecturer> l = new ArrayList<lecturer>();
+        ArrayList<Student> s = new ArrayList<Student>();
+ 
+ 
+        //System.out.println("欢迎使用选课系统，请选择需要操作的对象");
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.println("欢迎使用选课系统，请选择需要操作的对象");
+            System.out.println("1、教师系统 | 2、学生系统 | 3、退出");
+            String choice = scanner.next();
+            if(Objects.equals(choice, "1") ) {
+                teachernum++;
+                System.out.println("1、教授");
+                System.out.println("2、副教授");
+                System.out.println("3、讲师");
+                String choices = scanner.next();
+ 
+                switch (choices) {
+                    case "1":
+                        addProfessor(p);
+                        break;
+                    case "2":
+                        addAssistantProfessor(a);
+                        break;
+                    case "3":
+                        addLecturer(l);
+                        break;
+                }
+            } else if(teachernum == 0) {
+                System.out.println("暂未开放敬请期待！");
+                break;
+            } else if(Objects.equals(choice,"2")) {
+ 
+                    Scanner scanner1 = new Scanner(System.in);
+                    System.out.println("欢迎进入学生系统");
+                    System.out.println("请输入姓名");
+                    String name = scanner1.next();
+                    System.out.println("请输入学号");
+                    int id1 = Integer.parseInt(scanner1.next());
+ 
+                    System.out.println("请输入课程序列号（1 | 2 | 3）\n");
+                    while (true) {
+ 
+                        for (int i = 1; i <= p.size(); i++) {
+                            Professor p1 = p.get(i - 1);
+                            System.out.println("课程序号  " + "教授名称     " + "教授工号   " + "课题名称");
+                            System.out.println((5 * i - 4) + "          " + p1.getName() + "          " + p1.getId() + "          " + p1.getCourses(0));
+                            System.out.println((5 * i - 3) + "          " + p1.getName() + "          " + p1.getId() + "          " + p1.getCourses(1));
+                            System.out.println((5 * i - 2) + "          " + p1.getName() + "          " + p1.getId() + "          " + p1.getCourses(2));
+                            System.out.println((5 * i - 1) + "          " + p1.getName() + "          " + p1.getId() + "          " + p1.getCourses(3));
+                            System.out.println((5 * i ) + "          " + p1.getName() + "          " + p1.getId() + "          " + p1.getCourses(4));
+ 
+                        }
+ 
+                        for (int i = 1; i <= a.size(); i++) {
+                            associateProfessor a1 = a.get(i - 1);
+                            System.out.println("课程序号  " + "副教授名称    " + "副教授工号   " + "课题名称");
+                            System.out.println((p.size() * 5 + i * 4 - 3) + "           " + a1.getName() + "          " + a1.getId() + "            " + a1.getCourses(0));
+                            System.out.println((p.size() * 5 + i * 4 - 2) + "          " + a1.getName() + "          " + a1.getId() + "            " + a1.getCourses(1));
+                            System.out.println((p.size() * 5 + i * 4 - 1) + "          " + a1.getName() + "          " + a1.getId() + "            " + a1.getCourses(2));
+                            System.out.println((p.size() * 5 + i * 4 ) + "          " + a1.getName() + "          " + a1.getId() + "            " + a1.getCourses(3));
+ 
+ 
+                        }
+                        for (int i = 1; i <= l.size(); i++) {
+                            lecturer l1 = l.get(i - 1);
+                            System.out.println("课程序号  " + "讲师名称     " + "讲师工号    " + "课题名称");
+                            System.out.println((p.size() * 5 + a.size() * 4 + i * 3 - 2) + "          " + l1.getName() + "          " + l1.getId() + "        " + l1.getCourses(0));
+                            System.out.println((p.size() * 5 + a.size() * 4 + i * 3 - 1) + "          " + l1.getName() + "          " + l1.getId() + "        " + l1.getCourses(1));
+                            System.out.println((p.size() * 5 + a.size() * 4 + i * 3 ) + "          " + l1.getName() + "          " + l1.getId() + "        " + l1.getCourses(2));
+ 
+ 
+                        }
+                        int c = Integer.parseInt(scanner.next());
+                        if (c >= 1 && c <= p.size() * 5) {
+                            Professor p1 = p.get((int) Math.ceil((double) c / 5) - 1);
+                            int c1;
+                            if (c <= 5) {
+                                c1 = c;
+                            } else {
+                                c1 = c % 5;
+                            }
+                            if(p1.getStatus(c1 - 1) == "已被选择") {
+                                System.out.println("重选！");
+ 
+                            } else {
+                                p1.setStudent(name,id1, p1.getCourses(c1 - 1));
+                                p1.setStatus(c1 - 1);
+                                p.set((int) Math.ceil((double) c / 5) - 1,p1);
+                                System.out.println("选课完成！\n");
+                                break;
+                            }
+                        }
+                        if (c > p.size() * 5 && c <= (p.size() * 5 + a.size() * 4)) {
+                            associateProfessor a1 = a.get((int) Math.ceil((double) (c - p.size() * 5) / 4) - 1);
+                            int c1;
+                            if (c - p.size() * 5 <= 4) {
+                                c1 = c - p.size() * 5;
+                            } else {
+                                c1 = (c - p.size() * 5) % 4;
+                            }
+                            if(a1.getStatus(c1 - 1) == "已被选择") {
+                                System.out.println("重选！");
+ 
+                            } else {
+                                a1.setStudent(name,id1,a1.getCourses(c1 - 1));
+                                a1.setStatus(c1 - 1);
+                                a.set((int) Math.ceil((double) (c - p.size() * 5) / 4) - 1, a1);
+                                System.out.println("选课完成！\n");
+                                break;
+                            }
+ 
+                        }
+                        if (c > p.size() * 5 + a.size() * 4 && c <= (p.size() * 5 + a.size() * 4 + l.size() * 3)) {
+                            lecturer l1 = l.get((int) Math.ceil((double) (c - p.size() * 5 - a.size() * 4) / 3) - 1);
+                            int c1;
+                            if (c - p.size() * 5 - a.size() * 4 <= 3) {
+                                c1 = c - p.size() * 5 - a.size() *4;
+                            } else {
+                                c1 = ( c - p.size() * 5 - a.size() *4) % 3;
+                            }
+                            if(l1.getStatus(c1 - 1) == "已被选择") {
+                                System.out.println("重选！");
+ 
+                            } else {
+                                l1.setStudent(name,id1,l1.getCourses(c1 - 1));
+                                l1.setStatus(c1 - 1);
+                                l.set((int) Math.ceil((double) (c - p.size() * 5 - a.size() * 4) / 3) - 1, l1);
+                                System.out.println("选课完成！\n");
+                                break;
+                            }
+                        }
+ 
+                    }
+ 
+                }
+             else if(Objects.equals(choice, "3")){
+                System.out.println("感谢使用本系统，再见！");
+                break;
+            }
+ 
+        }
+    }
+ 
+ 
+ 
+    private static void addProfessor(ArrayList<Professor> p) {
+        int flag = 0;
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("欢迎教授使用");
+        System.out.println("请输入姓名");
+        String name = scanner.next();
+        System.out.println("教工号");
+        int id  = Integer.parseInt(scanner.next());
+        for(int i = 0; i < p.size(); i++) {
+ 
+            if (Objects.equals(p.get(i).getName(), name) && Objects.equals(p.get(i).getId(), id)) {
+                flag++;
+                System.out.println("欢迎查看您的学生信息");
+                if(p.get(i).getNum() == 0) {
+                    System.out.println("还没有学生选择您的课程！\n");
+                } else {
+                    for(int j = 0; j < p.get(i).getNum(); j++) {
+                        System.out.println("姓名:   " + p.get(i).stu[j][0] + "   id:   "+ p.get(i).stu[j][1] + "    课程:   " + p.get(i).stu[j][2]);
+                    }
+                }
+            }
+        }
+        String[] courses = new String[5];
+        if(flag == 0){
+            System.out.println("请出5道题目供学生选择");
+            for(int k = 0; k < 5; k++) {
+                courses[k] = scanner.next();
+            }
+            Professor p1 = new Professor(name, id, courses);
+            p.add(p1);
+ 
+            System.out.println("创建课程成功，感谢使用");
+            System.out.println();
+ 
+        }
+    }
+ 
+ 
+    private static void addAssistantProfessor(ArrayList<associateProfessor> a) {
+        int flag = 0;
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("欢迎副教授使用");
+        System.out.println("请输入姓名");
+        String name = scanner.next();
+        System.out.println("教工号");
+        int id  = Integer.parseInt(scanner.next());
+        for(int i = 0; i < a.size(); i++) {
+ 
+            if (Objects.equals(a.get(i).getName(), name) && Objects.equals(a.get(i).getId(), id)) {
+                flag++;
+                System.out.println("欢迎查看您的学生信息");
+                if(a.get(i).getNum() == 0) {
+                    System.out.println("还没有学生选择您的课程！\n");
+                }else {
+                    for(int j = 0; j < a.get(i).getNum(); j++) {
+                        System.out.println("姓名:   " + a.get(i).stu[j][0] + "   id:   "+ a.get(i).stu[j][1] + "    课程:   " + a.get(i).stu[j][2]);
+                    }
+                }
+            }
+        }
+        String[] courses = new String[4];
+        if(flag == 0){
+            System.out.println("请出4道题目供学生选择");
+            for(int k = 0; k < 4; k++) {
+                courses[k] = scanner.next();
+            }
+           associateProfessor a1 = new associateProfessor(name, id, courses);
+            a.add(a1);
+ 
+            System.out.println("创建课程成功，感谢使用");
+            System.out.println();
+ 
+        }
+    }
+ 
+ 
+    private static void addLecturer(ArrayList<lecturer> l) {
+        int flag = 0;
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("欢迎讲师使用");
+        System.out.println("请输入姓名");
+        String name = scanner.next();
+        System.out.println("教工号");
+        int id  = Integer.parseInt(scanner.next());
+        for(int i = 0; i < l.size(); i++) {
+ 
+            if (Objects.equals(l.get(i).getName(), name) && Objects.equals(l.get(i).getId(), id)) {
+                flag++;
+                System.out.println("欢迎查看您的学生信息");
+                if(l.get(i).getNum() == 0) {
+                    System.out.println("还没有学生选择您的课程！\n");
+                } else {
+                    for(int j = 0; j < l.get(i).getNum(); j++) {
+                        System.out.println("姓名:   " + l.get(i).stu[j][0] + "   id:   "+ l.get(i).stu[j][1] + "    课程:   " + l.get(i).stu[j][2]);
+                    }
+                }
+ 
+            }
+        }
+        String[] courses = new String[3];
+        if(flag == 0){
+            System.out.println("请出3道题目供学生选择");
+            for(int k = 0; k < 3; k++) {
+                courses[k] = scanner.next();
+            }
+            lecturer l1 = new lecturer(name, id, courses);
+            l.add(l1);
+ 
+            System.out.println("创建课程成功，感谢使用");
+            System.out.println();
+ 
+        }
+    }
+ 
+}
